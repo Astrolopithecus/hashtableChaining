@@ -29,7 +29,7 @@ class LinkedList:
         if self.head == None:
             self.head = node
         # Check if a node with the given key already exists & updates it with the new value
-            found = self.search(key)
+        found = self.search(key)
         if found:
             found = node
         # Otherwise add the new node at the head 
