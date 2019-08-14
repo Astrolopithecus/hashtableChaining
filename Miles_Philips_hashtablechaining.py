@@ -28,7 +28,11 @@ class LinkedList:
         # If list is empty, set the node to be the head
         if self.head == None:
             self.head = node
-        # Otherwise add the new node at the head    
+        # Check if a node with the given key already exists & updates it with the new value
+            found = self.search(key)
+        if found:
+            found = node
+        # Otherwise add the new node at the head 
         else:
             node.next = self.head
             # Set new node's next pointer to self.head
@@ -40,8 +44,10 @@ class LinkedList:
         '''Searches the list sequentially to find a node that matches the 
         given key & returns it
         '''
+        # If list is empty retuenn none.
         if self.head == None:
             return None
+        # Otherwise go through each item in list & check if it matches the given key.
         else:
             current = self.head
             while current:
@@ -49,7 +55,6 @@ class LinkedList:
                     return current
                 current = current.next
             return None
-
 
     def __len__(self):
         '''Returns the number of nodes in the list
@@ -83,57 +88,63 @@ class HashTableChaining:
         two letters with weights of 1 and 2 respectively. It then applies 
         the "remainder".
         '''
-        return (ord(key[0]) + 2 * ord(key[1])) % size
+        hash = key.lower()
+        return (ord(hash[0]) + 2 * ord(hash[1])) % size
 
     def put(self, key, value):
         '''This method adds a new (key, value) pair to the LinkedList at
          the correct slot of the hash table.
         '''
         hashvalue = self.hashFunction(key,self.size)
+        self.hashTable[hashvalue].add(key,value) 
+       
+        # if self.hashTable[hashvalue] == None:
+        #     self.hashTable.key[hashvalue] = key
+        #     self.hashTable.value[hashvalue] = value
 
-        if self.hashTable[hashvalue] == None:
-            self.hashTable.key[hashvalue] = key
-            self.hashTable.value[hashvalue] = value
+        # else:
+        #     if self.hashTable[hashvalue] == key:
+        #         self.hashTable.data[hashvalue] = value  #replace
+        #     else:
+        #         nextslot = (hashvalue+1) % self.size
+        #         while self.hashTable.key[nextslot] != None and self.hashTable.key[nextslot] != key:
+        #             nextslot = (hashvalue+1) % self.size
 
-        else:
-            if self.hashTable[hashvalue] == key:
-                self.hashTable.data[hashvalue] = value  #replace
-            else:
-                nextslot = (hashvalue+1) % self.size
-                while self.hashTable.key[nextslot] != None and self.hashTable.key[nextslot] != key:
-                    nextslot = (hashvalue+1) % self.size
-
-                if self.hashTable.key[nextslot] == None:
-                    self.hashTable.key[nextslot] = key
-                    self.hashTable.value[nextslot] = value
-                else:
-                    self.hashTable.value[nextslot] = value #replace
+        #         if self.hashTable.key[nextslot] == None:
+        #             self.hashTable.key[nextslot] = key
+        #             self.hashTable.value[nextslot] = value
+        #         else:
+        #             self.hashTable.value[nextslot] = value #replace
 
     def get(self, key):
         '''method returns the value corresponding to the given key from the 
         hash table if the key is present in the hash table otherwise returns 
         None.
         '''
-        startslot = self.hashFunction(key, self.size)
-        data = None
-        stop = False
-        found = False
-        position = startslot
-        while self.hashTable.key[position] != None and not found and not stop:
-            if self.hashTable.key[position] == key:
-                found = True
-                data = self.hashTable.value[position]
-            else:
-                position = self.hashFunction(position + 1, self.size)
-                if position == startslot:
-                    stop = True
-        return data
+        hashvalue = self.hashFunction(key,self.size)
+        return self.hashTable[hashvalue].search(key)
+
+        # startslot = self.hashFunction(key, self.size)
+        # data = None
+        # stop = False
+        # found = False
+        # position = startslot
+        # while self.hashTable.key[position] != None and not found and not stop:
+        #     if self.hashTable.key[position] == key:
+        #         found = True
+        #         data = self.hashTable.value[position]
+        #     else:
+        #         position = self.hashFunction(position + 1, self.size)
+        #         if position == startslot:
+        #             stop = True
+        # return data
 
     def __getitem__(self, key):
         return self.get(key)
         
     def __setitem__(self, key, value):
         return self.put(key, value)            
+
 def main():
     print("Welcome to Student Score Hash table\n")
     studentTable = HashTableChaining(11)
